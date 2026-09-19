@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कहानी कुछ पल की | साइबर एडिशनल</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600;700&family=Rozha+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #030712;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --text-color: #f1f5f9;
+            --cyber-cyan: #00f3ff;
+            --cyber-magenta: #ff007f;
+            --cyber-green: #00ff88;
+            --cyber-yellow: #facc15;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(0, 243, 255, 0.3);
+            --bubble-bg: rgba(15, 23, 42, 0.95);
+            --bubble-text: #ffffff;
+            --shadow: 0 0 25px rgba(0, 243, 255, 0.15);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #0f172a;
+            --cyber-cyan: #0284c7;
+            --cyber-magenta: #e11d48;
+            --cyber-green: #16a34a;
+            --cyber-yellow: #d97706;
+            --text-secondary: #475569;
+            --border-color: rgba(2, 132, 199, 0.4);
+            --bubble-bg: #ffffff;
+            --bubble-text: #0f172a;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            font-size: 16px;
+            position: relative;
+        }
+
+        /* Animated Grid & Scanline Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 998;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Futuristic HUD Progress Header */
+        .hud-header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hud-stats {
+            display: flex;
+            gap: 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--cyber-cyan);
+            text-shadow: 0 0 8px var(--cyber-cyan);
+        }
+
+        .progress-container { width: 100%; height: 4px; background: rgba(255,255,255,0.1); position: absolute; bottom: 0; left: 0; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-magenta)); width: 0%; transition: width 0.3s ease; box-shadow: 0 0 10px var(--cyber-cyan); }
+
+        /* HUD Navigation Control Panel */
+        .nav-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            color: var(--cyber-cyan);
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+        }
+
+        .btn-icon:hover {
+            color: #fff;
+            background: var(--cyber-cyan);
+            box-shadow: 0 0 15px var(--cyber-cyan);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon.active {
+            background: var(--cyber-magenta);
+            color: #fff;
+            border-color: var(--cyber-magenta);
+            box-shadow: 0 0 15px var(--cyber-magenta);
+        }
+
+        /* Header */
+        header { text-align: center; padding: 80px 20px 20px; max-width: 900px; width: 100%; }
+        .cyber-badge {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--cyber-cyan);
+            border: 1px solid var(--cyber-cyan);
+            font-family: 'Orbitron', sans-serif;
+            padding: 4px 18px;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .title {
+            font-family: 'Rozha One', serif;
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 0 0 10px var(--cyber-magenta), 0 0 20px var(--cyber-magenta);
+            margin-bottom: 5px;
+        }
+
+        .author { font-size: 1rem; color: var(--text-secondary); font-weight: 300; }
+        .author span { color: var(--cyber-cyan); font-weight: 600; }
+
+        /* Main Container & Cyber Cards */
+        main { max-width: 900px; width: 92%; margin-bottom: 40px; }
+        .story-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            display: none;
+            animation: cyberFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .story-card.active { display: block; }
+
+        .chapter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(90deg, var(--cyber-magenta), transparent);
+            color: #fff;
+            padding: 6px 18px;
+            border-left: 4px solid var(--cyber-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .comic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        
+        /* 3D Holographic Panel Effect */
+        .comic-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 18px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .comic-panel:hover {
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        /* Panel HUD Corner Decorators */
+        .comic-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 10px; height: 10px;
+            border-top: 2px solid var(--cyber-cyan); border-left: 2px solid var(--cyber-cyan);
+        }
+        .comic-panel::after {
+            content: ''; position: absolute; bottom: 0; right: 0; width: 10px; height: 10px;
+            border-bottom: 2px solid var(--cyber-cyan); border-right: 2px solid var(--cyber-cyan);
+        }
+
+        /* SVG Vector Panels */
+        .video-panel { width: 100%; height: 180px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border-color); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .video-panel svg { width: 100%; height: 100%; object-fit: cover; }
+        .rain-anim { background: linear-gradient(to bottom, #050b14, #0f172a); animation: rainPulse 2s infinite alternate; }
+        @keyframes rainPulse { 0% { filter: brightness(0.8) drop-shadow(0 0 2px var(--cyber-cyan)); } 100% { filter: brightness(1.2) drop-shadow(0 0 8px var(--cyber-cyan)); } }
+
+        /* Speech Bubbles & Narrator Box */
+        .narrator-box {
+            background: rgba(250, 204, 21, 0.1);
+            color: #fde047;
+            padding: 14px 20px;
+            border-left: 4px solid var(--cyber-yellow);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .speech-bubble {
+            background: var(--bubble-bg);
+            color: var(--bubble-text);
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            margin-bottom: 15px;
+            font-weight: 400;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .speaking {
+            transform: scale(1.02);
+            border-color: var(--cyber-magenta) !important;
+            box-shadow: 0 0 20px var(--cyber-magenta) !important;
+            background: rgba(255, 0, 127, 0.15) !important;
+        }
+
+        .character-name {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--cyber-cyan);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .sfx-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--cyber-magenta);
+            text-shadow: 0 0 10px var(--cyber-magenta);
+            text-align: center;
+            margin: 15px 0;
+            letter-spacing: 4px;
+        }
+
+        /* Cyber Pagination Controls */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .btn-page {
+            background: linear-gradient(135deg, var(--cyber-cyan), #0284c7);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+
+        .btn-page:hover:not(:disabled) {
+            background: var(--cyber-magenta);
+            color: #fff;
+            box-shadow: 0 0 20px var(--cyber-magenta);
+            transform: translateY(-2px);
+        }
+
+        .btn-page:disabled {
+            background: var(--text-secondary);
+            opacity: 0.3;
+            cursor: not-allowed;
+            box-shadow: none;
+            clip-path: none;
+        }
+
+        .page-indicator {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--cyber-cyan);
+            text-shadow: 0 0 8px var(--cyber-cyan);
+        }
+
+        /* Focus Mode Overlay */
+        .focus-active main {
+            z-index: 999;
+            position: relative;
+        }
+        .focus-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 997;
+            display: none;
+            backdrop-filter: blur(8px);
+        }
+        .focus-active .focus-overlay { display: block; }
+
+        footer { margin-top: auto; padding: 25px; text-align: center; color: var(--text-secondary); font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; width: 100%; border-top: 1px solid var(--border-color); }
+
+        @keyframes cyberFade { from { opacity: 0; transform: translateY(15px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @media (max-width: 600px) { .title { font-size: 2.2rem; } .comic-grid { grid-template-columns: 1fr; } .story-card { padding: 20px 15px; } .hud-stats span { display: none; } }
+    </style>
+</head>
+<body>
+
+    <div class="scanlines"></div>
+    <div class="focus-overlay" id="focusOverlay"></div>
+
+    <!-- HUD Header Panel -->
+    <div class="hud-header">
+        <div class="hud-stats">
+            <div><i class="fa-solid fa-microchip"></i> SYSTEM: ONLINE</div>
+            <div><i class="fa-solid fa-gamepad"></i> XP: <span id="xpDisplay">000</span></div>
+        </div>
+
+        <div class="nav-controls">
+            <button class="btn-icon" id="autoPlayToggle" title="ऑटो-प्ले मोड (Auto Read)">
+                <i class="fa-solid fa-play"></i>
+            </button>
+            <button class="btn-icon" id="focusToggle" title="साइबर फोकस HUD मोड">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+            <button class="btn-icon" id="ttsToggle" title="मल्टी-वॉइस एआई स्पीच">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+            <button class="btn-icon" id="bgmToggle" title="सिंथवेव ऑडियो (SFX / Synth BGM)">
+                <i class="fa-solid fa-music"></i>
+            </button>
+            <button class="btn-icon" id="themeToggle" title="थीम बदलें">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+
+    <header>
+        <span class="cyber-badge"><i class="fa-solid fa-bolt"></i> Cyber Graphic Novel</span>
+        <h1 class="title">कहानी कुछ पल की</h1>
+        <p class="author">लेखक: <span>संदीप कोईरी 'S.K'</span></p>
+    </header>
+
+    <main id="storyContainer">
+        
+        <!-- Page 1 -->
+        <article class="story-card active" data-page="1">
+            <div class="chapter-tag"><i class="fa-solid fa-terminal"></i> भाग १ - डरावनी रात और निराशा</div>
+            
+            <div class="narrator-box" data-character="narrator">
+                "कहते हैं लड़के रोते नहीं हैं... सही कहा होगा। पर लड़के तब रोते हैं जब बात परिवार पर आती है। हाँ, मेरा नाम साहिल है। यह कहानी मेरी ही है- मेरे एक पल की, मेरे फ़रिश्ते की और एक छोटी सी मुलाकात की।"
+            </div>
+
+            <div class="sfx-text">* HEAVY RAIN & THUNDER *</div>
+
+            <div class="comic-grid">
+                <div class="comic-panel">
+                    <div class="video-panel rain-anim">
+                        <svg viewBox="0 0 200 120"><rect width="200" height="120" fill="#0f172a"/><circle cx="100" cy="85" r="8" fill="#00f3ff"/><path d="M0 100 Q 50 80, 100 100 T 200 100 L 200 120 L 0 120 Z" fill="#1e293b"/></svg>
+                    </div>
+                    <p data-character="narrator">बाहर मूसलाधार बारिश हो रही थी और मौसम बहुत भयावह था। हॉस्पिटल की सुनसान लॉबी में गेट के ठीक सामने लगी लोहे की छोटी-छोटी कुर्सियों पर मैं अकेला बैठा था। मेरे हाथ ठंडे पड़ रहे थे, चेहरे पर डर था और आँखों में रोके हुए आँसू थे। मेरे मन में एक तूफान उठ रहा था जिसे मैं दबाने की नाकाम कोशिश कर रहा था।</p>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="video-panel">
+                        <svg viewBox="0 0 200 120"><rect width="200" height="120" fill="#1e293b"/><circle cx="70" cy="50" r="25" fill="#e2e8f0"/><rect x="50" y="75" width="40" height="45" rx="5" fill="#00f3ff"/></svg>
+                    </div>
+                    <p data-character="narrator">तभी डॉक्टर बाहर आए, उन्होंने मेरे कंधे पर हाथ रखा और मुझसे पूछाः</p>
+                    <div class="speech-bubble" data-character="doctor">
+                        <div class="character-name">डॉक्टर</div>
+                        "घर से कोई बड़ा नहीं आया क्या? तुम्हारी माँ की हालत बहुत खराब है... या तो बच्चा बचेगा या तुम्हारी माँ, कुछ पक्का नहीं कहा जा सकता।"
+                    </div>
+                </div>
+            </div>
+
+            <p data-character="narrator">यह बात उस सुनसान लॉबी में गूंजने लगी। मेरे पापा पढ़े-लिखे नहीं थे और उन्हें रात में ठीक से दिखाई भी नहीं देता था, इसलिए वे आ नहीं सके थे। डॉक्टर के जाते ही मेरी आँखों से सागर टूट पड़ा और आँसू बहने लगे। मैं अपना मुँह छिपाकर रोने लगा।</p>
+        </article>
+
+        <!-- Page 2 -->
+        <article class="story-card" data-page="2">
+            <div class="chapter-tag"><i class="fa-solid fa-terminal"></i> भाग २ - एक अनजान स्पर्श</div>
+
+            <div class="comic-grid">
+                <div class="comic-panel">
+                    <div class="video-panel">
+                        <svg viewBox="0 0 200 120"><rect width="200" height="120" fill="#2e1065"/><circle cx="100" cy="45" r="22" fill="#fda4af"/><path d="M70 120 Q 100 70, 130 120" fill="#ff007f"/></svg>
+                    </div>
+                    <p data-character="narrator">तभी मुझे एक अंजान स्पर्श महसूस हुआ। मेरे दाहिने तरफ वाली कुर्सी पर एक मासूम लड़की आकर बैठी। उसने गुलाबी और फीके लाल रंग का सलवार-कमीज पहना था, कानों में छोटे झुमके और माथे पर छोटी बिंदिया थी। उसके हाथ में एक धोया हुआ खाली टिफिन था जिस पर पानी की बूँदें थीं। उसने धीरे से अपना हाथ मेरे काँपते हाथों पर रखा।</p>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="speech-bubble" data-character="girl">
+                        <div class="character-name">अनजान लड़की</div>
+                        "क्या हुआ?"
+                    </div>
+                    <p data-character="narrator">उसकी आवाज में इतना अपनापन था कि लगा कोई अपना सहारा देने आ गया है। मैंने झिझकते हुए, चेहरा मोड़कर आँसू छिपाने की कोशिश की और सिर हिला दिया। पर उसने प्यार और सांत्वना से फिर पूछाः</p>
+                    <div class="speech-bubble" data-character="girl">
+                        <div class="character-name">अनजान लड़की</div>
+                        "क्या हुआ है बोलो... मैं यहाँ हूँ।"
+                    </div>
+                    <div class="speech-bubble" data-character="sahil">
+                        <div class="character-name">साहिल</div>
+                        "मेरी माँ पिछले कुछ दिनों से आईसीयू (ICU) में भर्ती हैं..."
+                    </div>
+                </div>
+            </div>
+
+            <p data-character="narrator">और इतना कहकर मैं फिर चुप हो गया। बात कुछ दिनों पहले की है। मैं घर के पास वाले मैदान में दोस्तों को खेलते देख रहा था। अचानक घर की तरफ से रोने-चिल्लाने की आवाज आई। मैं दौड़कर गया तो पता चला कि गलत दवाई के असर के कारण माँ के पेट में पल रहा बच्चा खत्म हो गया था। पूरा परिवार परेशान था।</p>
+        </article>
+
+        <!-- Page 3 -->
+        <article class="story-card" data-page="3">
+            <div class="chapter-tag"><i class="fa-solid fa-terminal"></i> भाग ३ - अतीत का दर्द और फ़रिश्ता</div>
+
+            <p data-character="narrator">चचेरे भाई और बड़ी माँ अचेत माँ को संभाल रहे थे। मेरे छोटे भाई रो रहे थे। मैंने रोते हुए छोटे भाई (छोटू) को गोद में लिया। दादी रोते हुए छोटे भाई मोहित को रोक रही थीं ताकि एम्बुलेंस में माँ को ले जाया जा सके। हम सब बिलख रहे थे। माँ को एम्बुलेंस से हॉस्पिटल लाया गया। कुछ दिन बाद बाकी सब घर चले गए, लेकिन 4 दिन बीत जाने के बाद भी माँ की हालत नाजुक बनी हुई थी।</p>
+
+            <div class="comic-grid" style="margin-top: 15px;">
+                <div class="comic-panel">
+                    <div class="speech-bubble" data-character="girl">
+                        <div class="character-name">वह लड़की</div>
+                        "कोई बात नहीं, सब ठीक हो जाएगा।"
+                    </div>
+                    <p data-character="narrator">हॉस्पिटल की लॉबी में उस लड़की ने मेरा हाथ पकड़कर धीमे से कहा। मैंने उसकी तरफ देखा- शांत, सुंदर आँखें, हल्की मुस्कान और सादगी से भरा चेहरा। उसने बताया कि वह ऊपर वाले फ़्लोर पर अपनी नानी के लिए टिफिन लेकर गई थी, जो वहाँ आया (Aaya) का काम करती हैं। लौटते समय उसने मुझे अकेला रोते देखा तो मेरे पास आ बैठी।</p>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="speech-bubble" data-character="nani">
+                        <div class="character-name">नानी</div>
+                        "इहाँ का कर रही रे छौड़ी... गईली नहीं अब तक घरे? कौन है ई छोड़ा?"
+                    </div>
+                    <p data-character="narrator">रात के 10 बज चुके थे। थोड़ी देर में उसकी नानी आई और बोलीं। लड़की ने अपनी नानी को पूरी बात समझाई। नानी ने मुझसे कहाः</p>
+                    <div class="speech-bubble" data-character="nani">
+                        <div class="character-name">नानी</div>
+                        "बाबू घर चले जाओ, रात हो गया है। चिंता मत करो, तुम्हारी माँ को कुछ नहीं होगा, सब ठीक हो जाएगा।"
+                    </div>
+                </div>
+            </div>
+
+            <p data-character="narrator">वह लड़की मुझे हॉस्पिटल के बाहर चाय की दुकान तक छोड़ने आई और फिर पीछे की तरफ अपने मामा के घर चली गई। साहिल (मैं) चाय पीकर उस रात सुकून से सोया।</p>
+        </article>
+
+        <!-- Page 4 -->
+        <article class="story-card" data-page="4">
+            <div class="chapter-tag"><i class="fa-solid fa-terminal"></i> भाग ४ - राहत की खबर और माँ का प्यार</div>
+
+            <div class="comic-grid">
+                <div class="comic-panel">
+                    <p data-character="narrator">अगले दिन मैं हॉस्पिटल के बाहर मुर्दाघर के पास बने बैठने के स्थान पर डॉक्टर का इंतज़ार कर रहा था। तभी डॉक्टर आए। मैंने पूछाः</p>
+                    <div class="speech-bubble" data-character="sahil">
+                        <div class="character-name">साहिल</div>
+                        "सर, माँ कैसी हैं?"
+                    </div>
+                    <div class="speech-bubble" data-character="doctor">
+                        <div class="character-name">डॉक्टर</div>
+                        "ठीक हैं, चिंता मत करो। आज आईसीयू से निकालकर महिला वार्ड में शिफ्ट कर देंगे।"
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <p data-character="narrator">बाहर वह लड़की फिर गुज़रती हुई मिली। उसने पूछाः</p>
+                    <div class="speech-bubble" data-character="girl">
+                        <div class="character-name">वह लड़की</div>
+                        "कैसी हैं आपकी माँ?"
+                    </div>
+                    <div class="speech-bubble" data-character="sahil">
+                        <div class="character-name">साहिल</div>
+                        "ठीक हैं, 12 बजे वार्ड में लाएंगे। तुम भी मिल लेना।"
+                    </div>
+                    <div class="speech-bubble" data-character="girl">
+                        <div class="character-name">वह लड़की</div>
+                        "ज़रूर! आप परेशान मत होइए, वो जल्दी ठीक हो जाएँगी। नाश्ता किए आप?"
+                    </div>
+                </div>
+            </div>
+
+            <p data-character="narrator">उसने बताया कि वह हॉस्पिटल के पीछे अपने मामा के घर रहती है। दोपहर 12 बजे जब मैं माँ के पास वार्ड में गया, तो माँ बहुत कमजोर दिख रही थीं। लेकिन उस हालत में भी माँ ने मुझसे धीमी आवाज़ में पहला सवाल यही पूछाः</p>
+            <div class="speech-bubble" data-character="maa">
+                <div class="character-name">माँ (कमज़ोर स्वर में)</div>
+                "कब आया है? खाना खाया या नहीं?"
+            </div>
+            <p data-character="narrator">अगले दिन सभी कागजी काम पूरे करके और बिल जमा करके हम माँ को घर ले आए। माँ अब पहले से काफी बेहतर थीं।</p>
+        </article>
+
+        <!-- Page 5 -->
+        <article class="story-card" data-page="5">
+            <div class="chapter-tag"><i class="fa-solid fa-terminal"></i> भाग ५ - आखिरी मुलाकात और अधूरी राह</div>
+
+            <p data-character="narrator">लगभग 4-5 दिनों बाद, मैं अपने दोस्त नीरज के साथ साइकिल के पीछे बैठकर हॉस्पिटल के पास से गुजर रहा था। अचानक मेरी नजर उसी लड़की पर पड़ी जो हाथ में टिफिन लिए बाहर आ रही थी। मैं चलती साइकिल से कूदकर तुरंत उसके पास भागता हुआ गया।</p>
+
+            <div class="comic-grid" style="margin-top: 15px;">
+                <div class="comic-panel">
+                    <div class="speech-bubble" data-character="sahil">
+                        <div class="character-name">साहिल</div>
+                        "अरे तुम ! तुम्हारी माँ कैसी हैं? तुम ठीक हो ना?"
+                    </div>
+                    <div class="speech-bubble" data-character="neeraj">
+                        <div class="character-name">नीरज</div>
+                        "यही है क्या भाई?"
+                    </div>
+                    <div class="speech-bubble" data-character="sahil">
+                        <div class="character-name">साहिल (शर्माते हुए)</div>
+                        "हाँ, यही है..."
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="speech-bubble" data-character="girl">
+                        <div class="character-name">वह लड़की</div>
+                        "अच्छा, मैं चलती हूँ, मामा देख लेंगे वरना..."
+                    </div>
+                    <p data-character="narrator">जाते-जाते उसने साहिल से हाथ मिलाया। साहिल का हाथ खुशी और घबराहट में ठंडा पड़ने लगा और काँपने लगा। उसने थोड़े अचरज से पूछाः</p>
+                    <div class="speech-bubble" data-character="girl">
+                        <div class="character-name">वह लड़की</div>
+                        "आप... आप नशा वगैरह करते हैं क्या? आपके हाथ इतने काँप क्यों रहे हैं?"
+                    </div>
+                    <div class="speech-bubble" data-character="sahil">
+                        <div class="character-name">साहिल</div>
+                        "क्या! नहीं, बिल्कुल नहीं... क्यों?"
+                    </div>
+                    <div class="speech-bubble" data-character="neeraj">
+                        <div class="character-name">नीरज (धीमे से)</div>
+                        "भाई, नंबर माँग ले!"
+                    </div>
+                    <div class="speech-bubble" data-character="girl">
+                        <div class="character-name">वह लड़की (मुस्कुराकर)</div>
+                        "मेरे पास अपना फोन नहीं है। कल आना, मामा का नंबर लाऊँगी तो दूँगी... उससे बात कर सकते हैं आप।"
+                    </div>
+                </div>
+            </div>
+
+            <div class="narrator-box" data-character="narrator" style="margin-top: 20px;">
+                "इतना कहकर वह मुड़कर चली गई। साहिल उसे जाते हुए देखता रह गया। मुझे नहीं पता था कि वह मुलाकात हमारी आखिरी मुलाकात होगी। अगले दिन मैं किसी वजह से नहीं जा पाया और उसके बाद वह मुझे कभी नहीं दिखी। आज इस बात को 5 साल बीत चुके हैं। मैं आज भी कभी-कभी उसी हॉस्पिटल की लॉबी में, उसी कुर्सी पर जाकर बैठता हूँ और दिल ही दिल में उसकी राह देखता हूँ। वह पल मेरी जिंदगी की एक सबसे खूबसूरत याद बनकर रह गया।"
+            </div>
+            <p style="text-align: center; font-weight: bold; color: var(--cyber-magenta); font-size: 1.2rem; font-family: 'Orbitron', sans-serif;">- MISSION CONCLUDED -</p>
+        </article>
+
+        <!-- Navigation Buttons -->
+        <div class="pagination">
+            <button class="btn-page" id="prevBtn" disabled><i class="fa-solid fa-chevron-left"></i> PREV</button>
+            <span class="page-indicator" id="pageIndicator">01 / 05</span>
+            <button class="btn-page" id="nextBtn">NEXT <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 | कहानी कुछ पल की - CYBER EDITION</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const pages = document.querySelectorAll('.story-card');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const progressBar = document.getElementById('progressBar');
+        const ttsToggle = document.getElementById('ttsToggle');
+        const themeToggle = document.getElementById('themeToggle');
+        const bgmToggle = document.getElementById('bgmToggle');
+        const focusToggle = document.getElementById('focusToggle');
+        const autoPlayToggle = document.getElementById('autoPlayToggle');
+        const xpDisplay = document.getElementById('xpDisplay');
+
+        let currentPage = 1;
+        const totalPages = pages.length;
+        let xpScore = 0;
+
+        // Dynamic Web Audio API Sound Effects Generator
+        let audioCtx = null;
+        function initAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playCyberSound(type) {
+            try {
+                initAudioContext();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.05);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+                } else if (type === 'next') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+                }
+            } catch (e) { console.log(e); }
+        }
+
+        // Add XP Points System
+        function addXP(points) {
+            xpScore += points;
+            xpDisplay.innerText = String(xpScore).padStart(3, '0');
+        }
+
+        // Voice Profiles
+        const voiceProfiles = {
+            narrator: { pitch: 1.0, rate: 0.9 },
+            sahil:    { pitch: 0.85, rate: 0.9 },
+            doctor:   { pitch: 0.65, rate: 0.9 },
+            girl:     { pitch: 1.35, rate: 0.9 },
+            nani:     { pitch: 1.1, rate: 0.8 },
+            maa:      { pitch: 0.8, rate: 0.75 },
+            neeraj:   { pitch: 0.95, rate: 1.0 }
+        };
+
+        let availableVoices = [];
+        function loadVoices() {
+            if ('speechSynthesis' in window) availableVoices = window.speechSynthesis.getVoices();
+        }
+        loadVoices();
+        if ('speechSynthesis' in window && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        // Page Navigation
+        function updatePage(pageIndex) {
+            pages.forEach((page, index) => page.classList.toggle('active', index + 1 === pageIndex));
+            prevBtn.disabled = pageIndex === 1;
+            nextBtn.disabled = pageIndex === totalPages;
+            nextBtn.innerHTML = (pageIndex === totalPages) ? 'FINISH <i class="fa-solid fa-check"></i>' : 'NEXT <i class="fa-solid fa-chevron-right"></i>';
+            pageIndicator.innerText = `0${pageIndex} / 0${totalPages}`;
+            progressBar.style.width = `${(pageIndex / totalPages) * 100}%`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            addXP(20);
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                ttsToggle.classList.remove('active');
+                document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+            }
+        }
+
+        nextBtn.addEventListener('click', () => { if (currentPage < totalPages) { playCyberSound('next'); updatePage(++currentPage); } });
+        prevBtn.addEventListener('click', () => { if (currentPage > 1) { playCyberSound('click'); updatePage(--currentPage); } });
+
+        // Auto Play Feature
+        let autoPlayInterval = null;
+        autoPlayToggle.addEventListener('click', function() {
+            playCyberSound('click');
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                this.classList.remove('active');
+            } else {
+                this.classList.add('active');
+                autoPlayInterval = setInterval(() => {
+                    if (currentPage < totalPages) {
+                        updatePage(++currentPage);
+                    } else {
+                        clearInterval(autoPlayInterval);
+                        autoPlayToggle.classList.remove('active');
+                    }
+                }, 8000);
+            }
+        });
+
+        // Focus / Cyber HUD Mode
+        focusToggle.addEventListener('click', function() {
+            playCyberSound('click');
+            document.body.classList.toggle('focus-active');
+            this.classList.toggle('active');
+        });
+
+        // TTS Engine
+        ttsToggle.addEventListener('click', () => {
+            playCyberSound('click');
+            if (!('speechSynthesis' in window)) return;
+
+            if (ttsToggle.classList.contains('active') || window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                ttsToggle.classList.remove('active');
+                document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+                return;
+            }
+
+            ttsToggle.classList.add('active');
+            if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
+            let hindiVoice = availableVoices.find(v => v.lang === 'hi-IN' || v.lang.includes('hi'));
+
+            const activeCard = document.querySelector('.story-card.active');
+            const elements = activeCard.querySelectorAll('[data-character]');
+            let index = 0;
+
+            window.speechSynthesis.cancel();
+
+            function speakNextElement() {
+                if (index >= elements.length || !ttsToggle.classList.contains('active')) {
+                    ttsToggle.classList.remove('active');
+                    document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+                    return;
+                }
+
+                const el = elements[index];
+                const character = el.getAttribute('data-character') || 'narrator';
+                let text = el.innerText;
+                const nameDiv = el.querySelector('.character-name');
+                if (nameDiv) text = text.replace(nameDiv.innerText, '').trim();
+
+                document.querySelectorAll('.speaking').forEach(e => e.classList.remove('speaking'));
+                el.classList.add('speaking');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'hi-IN';
+                if (hindiVoice) utterance.voice = hindiVoice;
+
+                const config = voiceProfiles[character] || voiceProfiles.narrator;
+                utterance.pitch = config.pitch;
+                utterance.rate = config.rate;
+
+                utterance.onend = () => { index++; setTimeout(speakNextElement, 250); };
+                utterance.onerror = () => { ttsToggle.classList.remove('active'); document.querySelectorAll('.speaking').forEach(e => e.classList.remove('speaking')); };
+
+                window.speechSynthesis.speak(utterance);
+            }
+
+            speakNextElement();
+        });
+
+        // Ambient Synthwave Audio Synthesizer
+        let isBgmPlaying = false;
+        let synthOsc1 = null, synthOsc2 = null, masterGain = null;
+
+        bgmToggle.addEventListener('click', function() {
+            playCyberSound('click');
+            initAudioContext();
+            if (!isBgmPlaying) {
+                synthOsc1 = audioCtx.createOscillator();
+                synthOsc2 = audioCtx.createOscillator();
+                masterGain = audioCtx.createGain();
+
+                synthOsc1.type = 'sawtooth';
+                synthOsc2.type = 'sine';
+
+                synthOsc1.frequency.setValueAtTime(110, audioCtx.currentTime); // A2
+                synthOsc2.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(400, audioCtx.currentTime);
+
+                masterGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+
+                synthOsc1.connect(filter);
+                synthOsc2.connect(filter);
+                filter.connect(masterGain);
+                masterGain.connect(audioCtx.destination);
+
+                synthOsc1.start(); synthOsc2.start();
+                isBgmPlaying = true; this.classList.add('active');
+            } else {
+                if (synthOsc1) { synthOsc1.stop(); synthOsc2.stop(); }
+                isBgmPlaying = false; this.classList.remove('active');
+            }
+        });
+
+        // Theme Toggle
+        themeToggle.addEventListener('click', function() {
+            playCyberSound('click');
+            if (document.body.getAttribute('data-theme') === 'light') {
+                document.body.removeAttribute('data-theme');
+                this.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+                this.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+        });
+
+        // Dynamic 3D Tilt Effect on Panels
+        document.querySelectorAll('.comic-panel').forEach(panel => {
+            panel.addEventListener('mousemove', (e) => {
+                const rect = panel.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                panel.style.transform = `perspective(1000px) rotateX(${-y / 15}deg) rotateY(${x / 15}deg)`;
+            });
+            panel.addEventListener('mouseleave', () => {
+                panel.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+            });
+        });
+
+        updatePage(currentPage);
+    </script>
+</body>
+</html>
