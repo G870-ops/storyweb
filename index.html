@@ -623,6 +623,7 @@
         let audioCtx = null;
         function initAudioContext() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
         }
 
         function playCyberSound(type) {
@@ -742,6 +743,12 @@
             ttsToggle.classList.add('active');
             if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
             let hindiVoice = availableVoices.find(v => v.lang === 'hi-IN' || v.lang.includes('hi'));
+            if (!hindiVoice && 'speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    availableVoices = window.speechSynthesis.getVoices();
+                };
+                window.speechSynthesis.getVoices();
+            }
 
             const activeCard = document.querySelector('.story-card.active');
             const elements = activeCard.querySelectorAll('[data-character]');
@@ -815,7 +822,7 @@
                 synthOsc1.start(); synthOsc2.start();
                 isBgmPlaying = true; this.classList.add('active');
             } else {
-                if (synthOsc1) { synthOsc1.stop(); synthOsc2.stop(); }
+                try { if (synthOsc1) { synthOsc1.stop(); synthOsc2.stop(); } } catch(e) {}
                 isBgmPlaying = false; this.classList.remove('active');
             }
         });
