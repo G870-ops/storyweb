@@ -77,6 +77,304 @@
             opacity: 0.6;
         }
 
+        /* New Futuristic Add-ons */
+        .cursor-glow {
+            position: fixed;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(0, 243, 255, 0.18), rgba(255, 0, 127, 0.08), transparent 70%);
+            filter: blur(16px);
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            opacity: 0.9;
+        }
+
+        .ambient-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--cyber-cyan);
+            box-shadow: 0 0 10px var(--cyber-cyan);
+            opacity: 0.7;
+            animation: floatParticle 12s linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(110vh) translateX(0) scale(0.8); opacity: 0; }
+            15% { opacity: 1; }
+            100% { transform: translateY(-20vh) translateX(30px) scale(1.3); opacity: 0; }
+        }
+
+        .neon-orbit {
+            position: relative;
+            width: 100%;
+            margin: 0 auto 24px;
+            padding: 18px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .neon-orbit::before,
+        .neon-orbit::after {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border: 1px solid rgba(0, 243, 255, 0.18);
+            border-radius: 50%;
+            transform: scale(1.06);
+        }
+
+        .neon-orbit::after {
+            inset: auto 10% 18px 10%;
+            height: 1px;
+            border: none;
+            background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
+            border-radius: 0;
+            animation: signalPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes signalPulse {
+            0%, 100% { opacity: 0.4; transform: scaleX(0.9); }
+            50% { opacity: 1; transform: scaleX(1.05); }
+        }
+
+        .utility-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .utility-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px 18px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 14px rgba(0, 243, 255, 0.1);
+        }
+
+        .utility-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-magenta), transparent);
+        }
+
+        .utility-label {
+            display: inline-block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            color: var(--cyber-green);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .utility-value {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .pulse-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--cyber-green);
+            box-shadow: 0 0 10px var(--cyber-green);
+            margin-right: 8px;
+            animation: pulseBlink 1.4s ease-in-out infinite;
+        }
+
+        @keyframes pulseBlink {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+        }
+
+        .story-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.74rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--cyber-cyan);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(0, 243, 255, 0.06);
+        }
+
+        .story-badge strong {
+            color: #fff;
+        }
+
+        .live-clock {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--cyber-yellow);
+            text-shadow: 0 0 10px var(--cyber-yellow);
+        }
+
+        .holo-console {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 18px;
+            margin: 0 auto 24px;
+            max-width: 900px;
+            width: 92%;
+            z-index: 1;
+        }
+
+        .signal-panel,
+        .event-stream {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signal-panel::before,
+        .event-stream::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), transparent 40%, rgba(255, 0, 127, 0.08));
+            pointer-events: none;
+        }
+
+        .signal-heading,
+        .event-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signal-heading span,
+        .event-heading span {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--cyber-cyan);
+            text-transform: uppercase;
+        }
+
+        .signal-bars {
+            display: flex;
+            align-items: end;
+            gap: 6px;
+            height: 52px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signal-bars i {
+            display: block;
+            width: 8px;
+            border-radius: 4px 4px 0 0;
+            background: linear-gradient(180deg, var(--cyber-green), var(--cyber-cyan));
+            animation: signalBars 1.7s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.5);
+        }
+
+        .signal-bars i:nth-child(1) { height: 18%; animation-delay: 0.1s; }
+        .signal-bars i:nth-child(2) { height: 35%; animation-delay: 0.2s; }
+        .signal-bars i:nth-child(3) { height: 60%; animation-delay: 0.3s; }
+        .signal-bars i:nth-child(4) { height: 78%; animation-delay: 0.4s; }
+        .signal-bars i:nth-child(5) { height: 100%; animation-delay: 0.5s; }
+        .signal-bars i:nth-child(6) { height: 70%; animation-delay: 0.6s; }
+        .signal-bars i:nth-child(7) { height: 45%; animation-delay: 0.7s; }
+
+        @keyframes signalBars {
+            0%, 100% { transform: scaleY(0.85); opacity: 0.7; }
+            50% { transform: scaleY(1.1); opacity: 1; }
+        }
+
+        .signal-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .event-stream ul {
+            list-style: none;
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 10px;
+        }
+
+        .event-stream li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 2px solid var(--cyber-cyan);
+            padding: 8px 10px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 0 10px 10px 0;
+            font-size: 0.82rem;
+            color: var(--text-color);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .event-stream li::before {
+            content: '◉';
+            color: var(--cyber-green);
+            text-shadow: 0 0 12px var(--cyber-green);
+        }
+
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .story-card,
+        .comic-panel,
+        .speech-bubble,
+        .narrator-box {
+            will-change: transform, opacity;
+        }
+
         /* Futuristic HUD Progress Header */
         .hud-header {
             position: fixed;
@@ -359,6 +657,8 @@
 </head>
 <body>
 
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="ambient-particles" id="ambientParticles"></div>
     <div class="scanlines"></div>
     <div class="focus-overlay" id="focusOverlay"></div>
 
@@ -367,6 +667,7 @@
         <div class="hud-stats">
             <div><i class="fa-solid fa-microchip"></i> SYSTEM: ONLINE</div>
             <div><i class="fa-solid fa-gamepad"></i> XP: <span id="xpDisplay">000</span></div>
+            <div class="live-clock" id="liveClock">00:00:00</div>
         </div>
 
         <div class="nav-controls">
@@ -394,6 +695,53 @@
         <h1 class="title">कहानी कुछ पल की</h1>
         <p class="author">लेखक: <span>संदीप कोईरी 'S.K'</span></p>
     </header>
+
+    <div class="neon-orbit">
+        <div class="utility-grid">
+            <div class="utility-card">
+                <div class="utility-label">Neural Signal</div>
+                <div class="utility-value"><span class="pulse-dot"></span> Story Engine Active</div>
+            </div>
+            <div class="utility-card">
+                <div class="utility-label">Memory Vault</div>
+                <div class="utility-value">Last Echo: <strong id="storyMemory">42.8%</strong></div>
+            </div>
+            <div class="utility-card">
+                <div class="utility-label">Mission Sync</div>
+                <div class="utility-value">Chapter Link: <strong id="chapterSync">01 / 05</strong></div>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <span class="story-badge"><i class="fa-solid fa-satellite-dish"></i> <strong>Quantum Reader</strong> // Human emotion archive</span>
+        </div>
+    </div>
+
+    <div class="holo-console reveal-on-scroll">
+        <div class="signal-panel">
+            <div class="signal-heading">
+                <span>Signal matrix</span>
+                <span>LIVE</span>
+            </div>
+            <div class="signal-bars" aria-label="Signal bars">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <div class="signal-meta">
+                <span>Latency: 12ms</span>
+                <span>Stability: 99.92%</span>
+            </div>
+        </div>
+        <div class="event-stream">
+            <div class="event-heading">
+                <span>Event Feed</span>
+                <span id="eventPulse">SYNC</span>
+            </div>
+            <ul>
+                <li>Emotional memory index updated</li>
+                <li>Rain distortion field stabilized</li>
+                <li>Hospital memory corridor loaded</li>
+            </ul>
+        </div>
+    </div>
 
     <main id="storyContainer">
         
@@ -614,10 +962,64 @@
         const focusToggle = document.getElementById('focusToggle');
         const autoPlayToggle = document.getElementById('autoPlayToggle');
         const xpDisplay = document.getElementById('xpDisplay');
+        const liveClock = document.getElementById('liveClock');
+        const storyMemory = document.getElementById('storyMemory');
+        const chapterSync = document.getElementById('chapterSync');
+        const cursorGlow = document.getElementById('cursorGlow');
+        const ambientParticles = document.getElementById('ambientParticles');
+        const eventPulse = document.getElementById('eventPulse');
 
         let currentPage = 1;
         const totalPages = pages.length;
         let xpScore = 0;
+
+        // Production-grade reveal and live telemetry
+        const revealElements = document.querySelectorAll('.reveal-on-scroll, .story-card, .comic-panel, .narrator-box, .speech-bubble');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.12 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        function updateEventPulse() {
+            const states = ['SYNC', 'READY', 'REMOTE', 'LIVE'];
+            const next = states[Math.floor(Math.random() * states.length)];
+            eventPulse.textContent = next;
+        }
+        setInterval(updateEventPulse, 2800);
+
+        // Live Clock + Story Memory HUD
+        function updateLiveClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour12: false });
+            liveClock.textContent = time;
+            const memoryValue = 42 + Math.round((currentPage / totalPages) * 58);
+            storyMemory.textContent = `${memoryValue}%`;
+            chapterSync.textContent = `${String(currentPage).padStart(2, '0')} / ${String(totalPages).padStart(2, '0')}`;
+        }
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+
+        // Ambient particle generator
+        for (let i = 0; i < 22; i++) {
+            const particle = document.createElement('span');
+            particle.className = 'particle';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationDelay = `${Math.random() * 10}s`;
+            particle.style.animationDuration = `${10 + Math.random() * 12}s`;
+            particle.style.opacity = (Math.random() * 0.7 + 0.3).toFixed(2);
+            ambientParticles.appendChild(particle);
+        }
+
+        // Cursor glow
+        document.addEventListener('pointermove', (event) => {
+            cursorGlow.style.left = `${event.clientX}px`;
+            cursorGlow.style.top = `${event.clientY}px`;
+        });
 
         // Dynamic Web Audio API Sound Effects Generator
         let audioCtx = null;
@@ -687,6 +1089,8 @@
             pageIndicator.innerText = `0${pageIndex} / 0${totalPages}`;
             progressBar.style.width = `${(pageIndex / totalPages) * 100}%`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            updateLiveClock();
+            updateEventPulse();
 
             addXP(20);
 
