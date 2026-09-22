@@ -1133,66 +1133,128 @@
         });
 
         // TTS Engine
+        function ensureSpeechReady() {
+            if (!('speechSynthesis' in window)) return false;
+            try {
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.resume();
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function getPreferredSpeechVoice() {
+            if (!('speechSynthesis' in window)) return null;
+            availableVoices = window.speechSynthesis.getVoices();
+            const preferred = availableVoices.find(v =>
+                v.lang && (
+                    v.lang.toLowerCase().includes('hi-in') ||
+                    v.lang.toLowerCase().includes('hi') ||
+                    v.lang.toLowerCase().includes('en-in') ||
+                    v.lang.toLowerCase().includes('en-us')
+                )
+            );
+            return preferred || availableVoices[0] || null;
+        }
+
+        function stopSpeechPlayback() {
+            if (!('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+            } catch (error) {}
+            document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+            ttsToggle.classList.remove('active');
+        }
+
         ttsToggle.addEventListener('click', () => {
             playCyberSound('click');
             if (!('speechSynthesis' in window)) return;
 
-            if (ttsToggle.classList.contains('active') || window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                ttsToggle.classList.remove('active');
-                document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+            if (ttsToggle.classList.contains('active') || window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+                stopSpeechPlayback();
                 return;
             }
 
+            const ready = ensureSpeechReady();
+            if (!ready) return;
+
             ttsToggle.classList.add('active');
-            if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
-            let hindiVoice = availableVoices.find(v => v.lang === 'hi-IN' || v.lang.includes('hi'));
-            if (!hindiVoice && 'speechSynthesis' in window) {
-                window.speechSynthesis.onvoiceschanged = () => {
-                    availableVoices = window.speechSynthesis.getVoices();
-                };
-                window.speechSynthesis.getVoices();
-            }
 
             const activeCard = document.querySelector('.story-card.active');
-            const elements = activeCard.querySelectorAll('[data-character]');
-            let index = 0;
+            if (!activeCard) return;
 
-            window.speechSynthesis.cancel();
+            const elements = Array.from(activeCard.querySelectorAll('[data-character]')).filter(el => {
+                const text = el.innerText && el.innerText.trim();
+                return !!text;
+            });
+
+            if (!elements.length) {
+                stopSpeechPlayback();
+                return;
+            }
+
+            let index = 0;
 
             function speakNextElement() {
                 if (index >= elements.length || !ttsToggle.classList.contains('active')) {
-                    ttsToggle.classList.remove('active');
-                    document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+                    stopSpeechPlayback();
                     return;
                 }
 
                 const el = elements[index];
                 const character = el.getAttribute('data-character') || 'narrator';
-                let text = el.innerText;
+                let text = el.innerText.trim();
                 const nameDiv = el.querySelector('.character-name');
                 if (nameDiv) text = text.replace(nameDiv.innerText, '').trim();
 
+                if (!text) {
+                    index += 1;
+                    setTimeout(speakNextElement, 50);
+                    return;
+                }
+
                 document.querySelectorAll('.speaking').forEach(e => e.classList.remove('speaking'));
                 el.classList.add('speaking');
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (typeof el.scrollIntoView === 'function') {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
 
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'hi-IN';
+                const preferredVoice = getPreferredSpeechVoice();
+
+                if (preferredVoice && preferredVoice.lang) {
+                    utterance.lang = preferredVoice.lang;
+                    utterance.voice = preferredVoice;
+                } else {
+                    utterance.lang = 'hi-IN';
+                }
+
                 utterance.volume = 1;
-                if (hindiVoice) utterance.voice = hindiVoice;
+                utterance.pitch = (voiceProfiles[character] && voiceProfiles[character].pitch) || 1;
+                utterance.rate = (voiceProfiles[character] && voiceProfiles[character].rate) || 1;
 
-                const config = voiceProfiles[character] || voiceProfiles.narrator;
-                utterance.pitch = config.pitch;
-                utterance.rate = config.rate;
+                utterance.onend = () => {
+                    index += 1;
+                    setTimeout(speakNextElement, 250);
+                };
 
-                utterance.onend = () => { index++; setTimeout(speakNextElement, 250); };
-                utterance.onerror = () => { ttsToggle.classList.remove('active'); document.querySelectorAll('.speaking').forEach(e => e.classList.remove('speaking')); };
+                utterance.onerror = (event) => {
+                    console.warn('Speech error on Android/mobile browser:', event.error || event);
+                    index += 1;
+                    setTimeout(speakNextElement, 150);
+                };
 
-                window.speechSynthesis.speak(utterance);
+                try {
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(utterance);
+                } catch (error) {
+                    console.warn('Speech start failed:', error);
+                    stopSpeechPlayback();
+                }
             }
 
-            speakNextElement();
+            setTimeout(speakNextElement, 200);
         });
 
         // Ambient Synthwave Audio Synthesizer
